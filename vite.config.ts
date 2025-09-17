@@ -5,6 +5,7 @@
 
   export default defineConfig({
     plugins: [react()],
+    base:"/sih25016",
     resolve: {
       extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
       alias: {
