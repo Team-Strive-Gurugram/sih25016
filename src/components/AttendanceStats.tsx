@@ -1,46 +1,64 @@
-import { Card } from './ui/card';
-import { Progress } from './ui/progress';
+import { CircularProgress } from "./CircularProgress";
+import { useAttendance } from "./AttendanceContext";
 
-interface AttendanceStatsProps {
-  stats: {
-    overall: number;
-    subjects: Array<{
-      name: string;
-      present: number;
-      absent: number;
-      total: number;
-      percentage: number;
-    }>;
-  };
+interface StatCardProps {
+  title: string;
+  present: number;
+  absent: number;
+  total: number;
+  percentage: number;
+  color: string;
 }
 
-export function AttendanceStats({ stats }: AttendanceStatsProps) {
+function StatCard({ title, present, absent, total, percentage, color }: StatCardProps) {
   return (
-    <div className="space-y-4">
-      {/* Overall Attendance */}
-      <Card className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="font-medium">Overall Attendance</h3>
-          <span className="font-semibold text-lg">{stats.overall}%</span>
+    <div className="bg-slate-700/50 backdrop-blur-sm rounded-2xl p-4 mb-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-white font-medium mb-2">{title}</h3>
+          <div className="flex items-center gap-4 text-gray-300 text-sm">
+            <span>Present: {present}</span>
+            <span>Absent: {absent}</span>
+            <span>Total: {total}</span>
+          </div>
         </div>
-        <Progress value={stats.overall} className="h-2" />
-      </Card>
-      
-      {/* Subject-wise Attendance */}
-      <div className="space-y-3">
-        {stats.subjects.map((subject, index) => (
-          <Card key={index} className="p-4">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-medium">{subject.name}</h4>
-              <span className="font-semibold">{subject.percentage}%</span>
-            </div>
-            <Progress value={subject.percentage} className="h-2 mb-2" />
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <span>Present: {subject.present}</span>
-              <span>Absent: {subject.absent}</span>
-              <span>Total: {subject.total}</span>
-            </div>
-          </Card>
+        
+        <CircularProgress 
+          percentage={percentage}
+          size={60}
+          color={color}
+          backgroundColor="#374151"
+          strokeWidth={6}
+        />
+      </div>
+    </div>
+  );
+}
+
+export function AttendanceStats() {
+  const { getAttendanceStats } = useAttendance();
+  const statsData = getAttendanceStats();
+
+  const getColorByPercentage = (percentage: number) => {
+    if (percentage >= 75) return "#22c55e"; // Green
+    if (percentage >= 50) return "#eab308"; // Yellow
+    return "#ef4444"; // Red
+  };
+
+  return (
+    <div className="mx-6">
+      <h2 className="text-white text-lg mb-4">Attendance Statistics</h2>
+      <div>
+        {statsData.map((stat, index) => (
+          <StatCard
+            key={index}
+            title={stat.subject}
+            present={stat.present}
+            absent={stat.absent}
+            total={stat.total}
+            percentage={stat.percentage}
+            color={getColorByPercentage(stat.percentage)}
+          />
         ))}
       </div>
     </div>
