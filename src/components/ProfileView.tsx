@@ -18,10 +18,10 @@ export function ProfileView() {
       <div className="bg-slate-700/50 backdrop-blur-sm rounded-2xl p-6">
         <div className="flex items-center gap-4 mb-6">
           <div className="w-20 h-20 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full flex items-center justify-center">
-            <span className="text-white text-2xl font-semibold">JD</span>
+            <span className="text-white text-2xl font-semibold">AS</span>
           </div>
           <div>
-            <h2 className="text-white text-xl font-semibold">John Doe</h2>
+            <h2 className="text-white text-xl font-semibold">Aditya Sharma</h2>
             <p className="text-gray-300">Computer Science</p>
             <p className="text-gray-400 text-sm">Roll: CS21001</p>
           </div>
@@ -31,15 +31,15 @@ export function ProfileView() {
         <div className="space-y-3">
           <div className="flex items-center gap-3 text-gray-300">
             <Mail className="w-4 h-4" />
-            <span className="text-sm">john.doe@university.edu</span>
+            <span className="text-sm">aditya.sharma@gurugramuniversity.edu</span>
           </div>
           <div className="flex items-center gap-3 text-gray-300">
             <Phone className="w-4 h-4" />
-            <span className="text-sm">+1 (555) 123-4567</span>
+            <span className="text-sm">+91 98765 43210</span>
           </div>
           <div className="flex items-center gap-3 text-gray-300">
             <MapPin className="w-4 h-4" />
-            <span className="text-sm">New York, NY</span>
+            <span className="text-sm">New Delhi, India</span>
           </div>
         </div>
       </div>
@@ -74,19 +74,15 @@ export function ProfileView() {
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-gray-300">Semester</span>
-            <span className="text-white">Fall 2025</span>
+            <span className="text-white">2nd</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-gray-300">Year</span>
             <span className="text-white">3rd Year</span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-gray-300">Department</span>
+            <span className="text-gray-300">Pursuing</span>
             <span className="text-white">Computer Science</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-gray-300">Advisor</span>
-            <span className="text-white">Dr. Sarah Johnson</span>
           </div>
         </div>
       </div>

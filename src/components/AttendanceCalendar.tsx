@@ -1,25 +1,64 @@
+import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { CircularProgress } from "./CircularProgress";
 import { useAttendance } from "./AttendanceContext";
 
 const daysOfWeek = ["S", "M", "T", "W", "T", "F", "S"];
+const monthNames = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
 
-// Calendar data for September 2025 - proper calendar structure
-const generateCalendarWeeks = () => {
-  // September 2025 starts on Monday (1st)
-  return [
-    [1, 2, 3, 4, 5],      // Week 1: Mon-Fri
-    [8, 9, 10, 11, 12],   // Week 2: Mon-Fri  
-    [15, 16, 17, 18, 19], // Week 3: Mon-Fri
-    [22, 23, 24, 25, 26], // Week 4: Mon-Fri
-    [29, 30, null, null, null] // Week 5: Mon-Tue
-  ];
+// Generate calendar weeks for any month/year
+const generateCalendarWeeks = (year: number, month: number) => {
+  const weeks: (number | null)[][] = [];
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  
+  // Start from Monday (1 = Monday, 0 = Sunday in our display)
+  const startDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1; // Convert Sunday=0 to Sunday=6
+  
+  let currentWeek: (number | null)[] = [];
+  
+  // Add empty cells for days before the first day of month
+  for (let i = 0; i < startDayOfWeek; i++) {
+    currentWeek.push(null);
+  }
+  
+  // Add all days of the month
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month, day);
+    const dayOfWeek = date.getDay();
+    
+    // Only show weekdays (Monday to Friday)
+    if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+      currentWeek.push(day);
+    }
+    
+    // If we've filled a work week (5 days) or reached end of month, start new week
+    if (currentWeek.filter(d => d !== null).length === 5 || day === daysInMonth) {
+      // Pad the week to 5 days if needed
+      while (currentWeek.length < 5) {
+        currentWeek.push(null);
+      }
+      weeks.push([...currentWeek]);
+      currentWeek = [];
+    }
+  }
+  
+  return weeks;
 };
 
 
 
 export function AttendanceCalendar() {
   const { subjects, getOverallAttendance, currentDate } = useAttendance();
+  
+  // State for current viewed month/year
+  const today = new Date();
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
+  const [viewYear, setViewYear] = useState(today.getFullYear());
   
   const getStatusColor = (status: string | null) => {
     switch (status) {
@@ -36,10 +75,16 @@ export function AttendanceCalendar() {
     }
   };
 
+  const navigateMonth = (direction: number) => {
+    const newDate = new Date(viewYear, viewMonth + direction);
+    setViewMonth(newDate.getMonth());
+    setViewYear(newDate.getFullYear());
+  };
+
   const getDateStatus = (date: number | null) => {
     if (!date) return null;
     
-    const dateString = `2025-09-${date.toString().padStart(2, '0')}`;
+    const dateString = `${viewYear}-${(viewMonth + 1).toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`;
     const isToday = dateString === currentDate;
     
     if (isToday) return "current";
@@ -71,12 +116,14 @@ export function AttendanceCalendar() {
       
       {/* Month Navigation */}
       <div className="flex items-center justify-between mb-6">
-        <button>
-          <ChevronLeft className="w-6 h-6 text-white" />
+        <button onClick={() => navigateMonth(-1)}>
+          <ChevronLeft className="w-6 h-6 text-white hover:text-cyan-400 transition-colors" />
         </button>
-        <h3 className="text-white text-lg">September 2025</h3>
-        <button>
-          <ChevronRight className="w-6 h-6 text-white" />
+        <h3 className="text-white text-lg">
+          {monthNames[viewMonth]} {viewYear}
+        </h3>
+        <button onClick={() => navigateMonth(1)}>
+          <ChevronRight className="w-6 h-6 text-white hover:text-cyan-400 transition-colors" />
         </button>
       </div>
 
@@ -104,7 +151,7 @@ export function AttendanceCalendar() {
 
           {/* Calendar Dates */}
           <div className="grid grid-cols-5 gap-2">
-            {generateCalendarWeeks().flat().map((date, index) => {
+            {generateCalendarWeeks(viewYear, viewMonth).flat().map((date, index) => {
               const uniqueKey = `date-${index}-${date || 'empty'}`;
               
               if (!date) return <div key={uniqueKey} />;

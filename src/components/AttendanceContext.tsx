@@ -40,16 +40,58 @@ const generateInitialData = (): Subject[] => {
     { id: '3', name: 'Database Systems', time: '2:00 PM - 4:00 PM', room: 'Room 101' }
   ];
 
+  // Generate same attendance pattern for every month
+  const generateAttendanceForSubject = (subjectId: string): AttendanceRecord[] => {
+    const attendance: AttendanceRecord[] = [];
+    
+    // Simple pattern that repeats for every month - just use the day number
+    // This ensures every month has the same attendance pattern
+    const basePattern = {
+      '1': ['present', 'present', 'absent', 'present', 'present', 'absent', 'present', 'present', 'present', 'absent', 
+            'present', 'present', 'present', 'absent', 'present', 'present', 'present', 'present', 'absent', 'present',
+            'present', 'present', 'absent', 'present', 'present', 'present', 'present', 'absent', 'present', 'present'],
+      '2': ['present', 'absent', 'present', 'present', 'absent', 'present', 'present', 'present', 'absent', 'present',
+            'present', 'absent', 'present', 'present', 'present', 'absent', 'present', 'present', 'present', 'absent',
+            'present', 'present', 'present', 'absent', 'present', 'present', 'absent', 'present', 'present', 'present'],
+      '3': ['present', 'present', 'present', 'present', 'absent', 'present', 'present', 'present', 'present', 'present',
+            'absent', 'present', 'present', 'present', 'present', 'present', 'absent', 'present', 'present', 'present',
+            'present', 'present', 'present', 'absent', 'present', 'present', 'present', 'present', 'present', 'absent']
+    };
+    
+    const pattern = basePattern[subjectId as keyof typeof basePattern] || basePattern['1'];
+    
+    // Generate for multiple months (6 past + current + 2 future)
+    for (let monthOffset = -6; monthOffset <= 2; monthOffset++) {
+      const currentMonth = new Date();
+      currentMonth.setMonth(currentMonth.getMonth() + monthOffset);
+      
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dayOfWeek = date.getDay();
+        
+        // Only generate attendance for class days (Mon-Fri)
+        if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+          const dateString = date.toISOString().split('T')[0];
+          
+          // Use the same pattern for every month based on day number
+          const patternIndex = (day - 1) % pattern.length;
+          const status = pattern[patternIndex] as 'present' | 'absent';
+          
+          attendance.push({ date: dateString, status });
+        }
+      }
+    }
+    
+    return attendance;
+  };
+
   return subjects.map(subject => ({
     ...subject,
-    attendance: [
-      // Sample past attendance data
-      { date: '2025-09-16', status: 'present' as const },
-      { date: '2025-09-23', status: 'present' as const },
-      { date: '2025-09-24', status: 'absent' as const },
-      { date: '2025-09-30', status: 'pending' as const },
-      { date: today, status: subject.id === '1' ? 'present' as const : 'pending' as const }
-    ]
+    attendance: generateAttendanceForSubject(subject.id)
   }));
 };
 

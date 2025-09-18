@@ -8,12 +8,12 @@ export function UserProfile() {
           <div className="flex items-center gap-4">
             {/* Avatar */}
             <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center">
-              <span className="text-white text-xl font-semibold">JD</span>
+              <span className="text-white text-xl font-semibold">AS</span>
             </div>
             
             {/* User Info */}
             <div>
-              <h2 className="text-white text-xl font-semibold">John Doe</h2>
+              <h2 className="text-white text-xl font-semibold">Aditya Sharma</h2>
               <p className="text-white/80">Roll: CS21001</p>
             </div>
           </div>
