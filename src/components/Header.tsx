@@ -42,7 +42,7 @@ export function Header({ currentPanel, onPanelChange }: HeaderProps) {
         </div>
         
         {/* App Name */}
-        <h1 className="text-white text-2xl font-semibold">AttendEase</h1>
+        <h1 className="text-white text-2xl font-semibold">Attendigo</h1>
       </div>
       
       {/* User Role Dropdown */}

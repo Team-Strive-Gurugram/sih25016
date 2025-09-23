@@ -34,7 +34,7 @@ export function HomeView() {
       <UserProfile />
       
       {/* QR Scanner Button */}
-      <div className="mx-6 mb-6">
+      {/*<div className="mx-6 mb-6">
         <Button 
           onClick={() => setIsQRScannerOpen(true)}
           className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white h-12"
@@ -42,7 +42,7 @@ export function HomeView() {
           <QrCode className="w-5 h-5 mr-2" />
           Scan QR Code to Mark Attendance
         </Button>
-      </div>
+      </div>*/}
       
       {/* Today's Schedule */}
       <div className="mx-6 mb-6">
